@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+model Offer {
+  id        String   @id @default(uuid())
+  name      String
+  pdfUrl    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile   OfferProfile?
+  playbooks DirectorPlaybook[]
+  templates Template[]
+  scripts   Script[]
+  campaigns Campaign[]
+
+  @@map("offers")
+}
+
+model OfferProfile {
+  id           String   @id @default(uuid())
+  offerId      String   @unique
+  bigIdea      String
+  mechanism    String
+  avatar       Json     // AvatarDetails as JSON
+  voiceAndTone String   @db.Text
+  constraints  String[] // Array of constraint strings
+  summaryText  String   @db.Text
+  embeddings   Unsupported("vector(1536)")? // OpenAI embeddings
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@map("offer_profiles")
+}
+
+model DirectorPlaybook {
+  id               String   @id @default(uuid())
+  offerId          String
+  version          Int
+  instructionsText String   @db.Text
+  config           Json     // PlaybookConfig as JSON
+  createdAt        DateTime @default(now())
+
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@unique([offerId, version])
+  @@map("director_playbooks")
+}
+
+model Template {
+  id                     String   @id @default(uuid())
+  offerId                String
+  sourcePlatform         String   // 'instagram' | 'tiktok'
+  sourcePostId           String
+  sourcePostUrl          String?
+  structuralDescription  String   @db.Text
+  templateText           String   @db.Text
+  placeholders           Json     // Array of TemplatePlaceholder
+  funnelStage            String   // 'cold' | 'warm' | 'hot'
+  pillar                 String
+  performanceTag         String?  // 'winner' | 'test' | 'loser'
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  offer            Offer              @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  scripts          Script[]
+  variableMappings VariableMapping[]
+
+  @@map("templates")
+}
+
+model VariableMapping {
+  id         String   @id @default(uuid())
+  templateId String
+  mappings   Json     // Record<string, string>
+  isGlobal   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@map("variable_mappings")
+}
+
+model Script {
+  id                   String   @id @default(uuid())
+  templateId           String
+  offerId              String
+  scriptText           String   @db.Text
+  angle                String   // 'pain' | 'pleasure' | 'objection' | 'contrarian' | 'authority'
+  hookType             String
+  targetAvatarSegment  String?
+  status               String   // 'draft' | 'sent_to_creatify' | 'video_ready' | 'posted'
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  template        Template         @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  offer           Offer            @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  videoAsset      VideoAsset?
+  campaignScripts CampaignScript[]
+
+  @@map("scripts")
+}
+
+model VideoAsset {
+  id              String    @id @default(uuid())
+  scriptId        String    @unique
+  creatifyJobId   String
+  videoUrl        String?
+  thumbnailUrl    String?
+  duration        Int?
+  status          String    // 'pending' | 'processing' | 'completed' | 'failed'
+  errorMessage    String?   @db.Text
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  updatedAt       DateTime  @updatedAt
+
+  script Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+
+  @@map("video_assets")
+}
+
+model Campaign {
+  id        String   @id @default(uuid())
+  offerId   String
+  name      String
+  objective String   // 'followers' | 'engagement' | 'leads' | 'sales'
+  status    String   @default("draft") // 'draft' | 'active' | 'completed' | 'paused'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  offer   Offer            @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  scripts CampaignScript[]
+
+  @@map("campaigns")
+}
+
+model CampaignScript {
+  id            String    @id @default(uuid())
+  campaignId    String
+  scriptId      String
+  scheduledTime DateTime?
+  igPostId      String?
+  postedAt      DateTime?
+  status        String    @default("pending") // 'pending' | 'processing' | 'ready' | 'scheduled' | 'published' | 'failed'
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  campaign      Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  script        Script         @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  instagramPost InstagramPost?
+
+  @@map("campaign_scripts")
+}
+
+model InstagramPost {
+  id                 String   @id @default(uuid())
+  campaignScriptId   String   @unique
+  instagramPostId    String   @unique
+  caption            String   @db.Text
+  mediaType          String   // 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
+  mediaUrl           String
+  thumbnail          String?
+  permalink          String
+  timestamp          DateTime
+  createdAt          DateTime @default(now())
+
+  campaignScript     CampaignScript      @relation(fields: [campaignScriptId], references: [id], onDelete: Cascade)
+  performanceMetrics PerformanceMetric[]
+
+  @@map("instagram_posts")
+}
+
+model PerformanceMetric {
+  id               String   @id @default(uuid())
+  instagramPostId  String
+  timestamp        DateTime @default(now())
+  metrics          Json     // All metrics as JSON
+  
+  instagramPost InstagramPost @relation(fields: [instagramPostId], references: [id], onDelete: Cascade)
+
+  @@map("performance_metrics")
+}

@@ -4,14 +4,18 @@
 
 ### Kodey.ai
 ```
-KODEY_API_KEY=5PozsJrACY80eWweN0Q2UalQm6tqY3Kv2PHBz7Ef
+KODEY_API_KEY=your-kodey-secret-key
+KODEY_PUBLISHABLE_KEY=your-kodey-publishable-key
+KODEY_LEGACY_KEY=your-kodey-legacy-key
 ```
+> **Note:** Get your keys from your Kodey.ai dashboard. Store actual keys in `backend/.env` (not committed to git).
 
 ### Creatify
 ```
-CREATIFY_API_ID=3551cfa8-d986-4b30-929f-b7e74dfa4b3d
-CREATIFY_API_KEY=dbbbb6d24c65666aa894dbe755691e5a19621851
+CREATIFY_API_ID=your-creatify-api-id
+CREATIFY_API_KEY=your-creatify-api-key
 ```
+> **Note:** Get your keys from your Creatify dashboard. Store actual keys in `backend/.env` (not committed to git).
 
 ---
 
@@ -40,11 +44,13 @@ NODE_ENV=development
 
 OPENAI_API_KEY=""
 
-CREATIFY_API_ID="3551cfa8-d986-4b30-929f-b7e74dfa4b3d"
-CREATIFY_API_KEY="dbbbb6d24c65666aa894dbe755691e5a19621851"
+CREATIFY_API_ID=""
+CREATIFY_API_KEY=""
 CREATIFY_BASE_URL="https://api.creatify.ai/api/v1"
 
-KODEY_API_KEY="5PozsJrACY80eWweN0Q2UalQm6tqY3Kv2PHBz7Ef"
+KODEY_API_KEY="your-kodey-secret-key"
+KODEY_PUBLISHABLE_KEY="your-kodey-publishable-key"
+KODEY_LEGACY_KEY="your-kodey-legacy-key"
 KODEY_BASE_URL="https://api.kodey.ai/api/v1"
 
 KODEY_AGENT_OFFER_ANALYZER=""

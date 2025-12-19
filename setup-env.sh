@@ -23,13 +23,14 @@ OPENAI_API_KEY=""
 # Anthropic (Optional alternative)
 ANTHROPIC_API_KEY=""
 
-# Creatify API
-CREATIFY_API_ID="3551cfa8-d986-4b30-929f-b7e74dfa4b3d"
-CREATIFY_API_KEY="dbbbb6d24c65666aa894dbe755691e5a19621851"
+# Creatify API (add your keys from Creatify dashboard)
+CREATIFY_API_ID=""
+CREATIFY_API_KEY=""
 CREATIFY_BASE_URL="https://api.creatify.ai/api/v1"
 
-# Kodey.ai API
-KODEY_API_KEY="5PozsJrACY80eWweN0Q2UalQm6tqY3Kv2PHBz7Ef"
+# Kodey.ai API (add your keys from Kodey.ai dashboard)
+KODEY_API_KEY=""
+KODEY_PUBLISHABLE_KEY=""
 KODEY_BASE_URL="https://api.kodey.ai/api/v1"
 
 # Kodey.ai Agent IDs (You'll add these after creating agents)
@@ -71,12 +72,9 @@ EOF
 echo ""
 echo "✅ Environment files created!"
 echo ""
-echo "📝 API Keys Configured:"
-echo "   ✅ Kodey.ai API Key"
-echo "   ✅ Creatify API ID"
-echo "   ✅ Creatify API Key"
-echo ""
-echo "⚠️  Still Need:"
+echo "⚠️  Add your API keys to backend/.env:"
+echo "   ❌ Kodey.ai API Key (from Kodey.ai dashboard)"
+echo "   ❌ Creatify API credentials (from Creatify dashboard)"
 echo "   ❌ OpenAI API Key (for embeddings)"
 echo "   ❌ Kodey.ai Agent IDs (create agents first)"
 echo "   ❌ Instagram API credentials (optional for now)"

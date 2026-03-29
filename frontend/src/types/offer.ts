@@ -16,6 +16,12 @@ export interface OfferProfile {
   voiceAndTone: string
   constraints: string[]
   summaryText: string
+  avatarJson?: {
+    demographics: string
+    psychographics: string
+    painPoints: string[]
+    desires: string[]
+  }
   createdAt: string
   updatedAt: string
 }

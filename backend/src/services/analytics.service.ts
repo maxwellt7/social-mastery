@@ -62,7 +62,7 @@ export async function getSummary(req: Request, res: Response) {
       topPerformers: [] as any[],
     }
 
-    posts.forEach((post) => {
+    posts.forEach((post: any) => {
       const latestMetrics = post.performanceMetrics[0]?.metricsJson as any
 
       if (latestMetrics) {
@@ -112,7 +112,7 @@ export async function getSummary(req: Request, res: Response) {
 
     // Calculate top performers
     aggregated.topPerformers = posts
-      .map((post) => {
+      .map((post: any) => {
         const metrics = post.performanceMetrics[0]?.metricsJson as any
         const engagement = (metrics?.likes || 0) + (metrics?.comments || 0) + (metrics?.saves || 0)
         return {
@@ -125,7 +125,7 @@ export async function getSummary(req: Request, res: Response) {
           templateDescription: post.campaignScript.script.template.structuralDescription,
         }
       })
-      .sort((a, b) => b.engagement - a.engagement)
+      .sort((a: any, b: any) => b.engagement - a.engagement)
       .slice(0, 10)
 
     res.json({
@@ -202,7 +202,7 @@ async function getPerformanceData(offerId: string) {
 
   return {
     totalPosts: posts.length,
-    posts: posts.map((post) => ({
+    posts: posts.map((post: any) => ({
       metrics: post.performanceMetrics[0]?.metricsJson,
       angle: post.campaignScript.script.angle,
       hookType: post.campaignScript.script.hookType,

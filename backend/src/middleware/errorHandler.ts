@@ -1,8 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
 
-export interface AppError extends Error {
-  statusCode?: number
-  isOperational?: boolean
+export class AppError extends Error {
+  statusCode: number
+  isOperational: boolean
+
+  constructor(message: string, statusCode = 500, isOperational = true) {
+    super(message)
+    this.statusCode = statusCode
+    this.isOperational = isOperational
+    Error.captureStackTrace(this, this.constructor)
+  }
 }
 
 export const errorHandler = (
@@ -24,14 +31,14 @@ export const errorHandler = (
   })
 }
 
-export class ApiError extends Error implements AppError {
-  statusCode: number
-  isOperational: boolean
-
+export class ApiError extends AppError {
   constructor(statusCode: number, message: string, isOperational = true) {
-    super(message)
-    this.statusCode = statusCode
-    this.isOperational = isOperational
-    Error.captureStackTrace(this, this.constructor)
+    super(message, statusCode, isOperational)
+  }
+}
+
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next)
   }
 }

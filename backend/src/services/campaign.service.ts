@@ -91,10 +91,10 @@ export async function getCampaign(req: Request, res: Response) {
         include: {
           script: {
             include: {
-              videoAssets: true,
+              videoAsset: true,
             },
           },
-          posts: true,
+          instagramPost: true,
         },
       },
     },

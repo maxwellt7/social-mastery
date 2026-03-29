@@ -106,11 +106,10 @@ async function processPdfAsync(offerId: string, pdfPath: string) {
         offerId,
         bigIdea: profileData.bigIdea,
         mechanism: profileData.mechanism,
-        avatarJson: profileData.avatar,
+        avatar: profileData.avatar,
         voiceAndTone: profileData.voiceAndTone,
-        constraints: profileData.constraints,
+        constraints: [profileData.constraints],
         summaryText: profileData.summary,
-        embedding: `[${embedding.join(',')}]`, // Store as pgvector format
       },
     })
 
@@ -120,7 +119,7 @@ async function processPdfAsync(offerId: string, pdfPath: string) {
         offerId,
         version: 1,
         instructionsText: generateInitialDirectorInstructions(profileData),
-        configJson: {
+        config: {
           hookWeights: {
             question: 1.0,
             statement: 1.0,
@@ -326,7 +325,7 @@ export async function updateAIDirector(req: Request, res: Response) {
   const agentResponse = await kodeyClient.executeAgent(insightsAgent.agent_id, {
     input: {
       currentInstructions: currentPlaybook.instructionsText,
-      currentConfig: currentPlaybook.configJson,
+      currentConfig: currentPlaybook.config,
       performanceData,
       insights,
     },
@@ -343,7 +342,7 @@ export async function updateAIDirector(req: Request, res: Response) {
       offerId: id,
       version: currentPlaybook.version + 1,
       instructionsText: updatedPlaybook.instructions,
-      configJson: updatedPlaybook.config,
+      config: updatedPlaybook.config,
     },
   })
 

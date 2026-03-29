@@ -22,16 +22,16 @@ export default function OfferSummaryPanel({ profile }: OfferSummaryPanelProps) {
         <div className="space-y-3">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Demographics</h4>
-            <p className="text-gray-600 text-sm">{profile.avatarJson.demographics}</p>
+            <p className="text-gray-600 text-sm">{profile.avatar.demographics}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-700">Psychographics</h4>
-            <p className="text-gray-600 text-sm">{profile.avatarJson.psychographics}</p>
+            <p className="text-gray-600 text-sm">{profile.avatar.psychographics}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-700">Pain Points</h4>
             <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
-              {profile.avatarJson.painPoints.map((point, idx) => (
+              {profile.avatar.painPoints.map((point, idx) => (
                 <li key={idx}>{point}</li>
               ))}
             </ul>
@@ -39,7 +39,7 @@ export default function OfferSummaryPanel({ profile }: OfferSummaryPanelProps) {
           <div>
             <h4 className="text-sm font-medium text-gray-700">Desires</h4>
             <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
-              {profile.avatarJson.desires.map((desire, idx) => (
+              {profile.avatar.desires.map((desire, idx) => (
                 <li key={idx}>{desire}</li>
               ))}
             </ul>

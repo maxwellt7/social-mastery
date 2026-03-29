@@ -1,15 +1,36 @@
 import { Request, Response, NextFunction } from 'express'
 
-export interface AppError extends Error {
-  statusCode?: number
-  isOperational?: boolean
+export class AppError extends Error {
+  statusCode: number
+  isOperational: boolean
+
+  constructor(message: string, statusCode: number, isOperational = true) {
+    super(message)
+    this.statusCode = statusCode
+    this.isOperational = isOperational
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+export class ApiError extends AppError {
+  constructor(statusCode: number, message: string, isOperational = true) {
+    super(message, statusCode, isOperational)
+  }
+}
+
+export const asyncHandler = (
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<void>
+) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next)
+  }
 }
 
 export const errorHandler = (
   err: AppError,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   console.error('Error:', err)
 
@@ -22,16 +43,4 @@ export const errorHandler = (
       ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
     },
   })
-}
-
-export class ApiError extends Error implements AppError {
-  statusCode: number
-  isOperational: boolean
-
-  constructor(statusCode: number, message: string, isOperational = true) {
-    super(message)
-    this.statusCode = statusCode
-    this.isOperational = isOperational
-    Error.captureStackTrace(this, this.constructor)
-  }
 }

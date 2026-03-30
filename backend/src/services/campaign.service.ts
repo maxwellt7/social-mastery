@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '../utils/prisma.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 import { postSchedulerQueue } from '../jobs/postScheduler.job.js'
 
@@ -8,7 +8,7 @@ export async function createCampaign(req: Request, res: Response) {
   const { offerId, name, objective, scriptIds } = req.body
 
   if (!offerId || !name || !scriptIds || !Array.isArray(scriptIds)) {
-    throw new AppError('Missing required fields', 400)
+    throw new ApiError('Missing required fields', 400)
   }
 
   try {
@@ -45,7 +45,7 @@ export async function createCampaign(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error creating campaign:', error)
-    throw new AppError('Failed to create campaign', 500)
+    throw new ApiError('Failed to create campaign', 500)
   }
 }
 
@@ -101,7 +101,7 @@ export async function getCampaign(req: Request, res: Response) {
   })
 
   if (!campaign) {
-    throw new AppError('Campaign not found', 404)
+    throw new ApiError('Campaign not found', 404)
   }
 
   res.json({
@@ -164,7 +164,7 @@ export async function updateCampaign(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error updating campaign:', error)
-    throw new AppError('Failed to update campaign', 500)
+    throw new ApiError('Failed to update campaign', 500)
   }
 }
 

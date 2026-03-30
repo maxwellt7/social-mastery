@@ -2,14 +2,14 @@ import { Request, Response } from 'express'
 import prisma from '../utils/prisma.js'
 import { instagramClient } from '../integrations/instagram.client.js'
 import { kodeyClient } from '../integrations/kodey.client.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 
 export async function getSummary(req: Request, res: Response) {
   const { offerId, startDate, endDate } = req.query
 
   if (!offerId) {
-    throw new AppError('Offer ID is required', 400)
+    throw new ApiError('Offer ID is required', 400)
   }
 
   try {
@@ -62,7 +62,7 @@ export async function getSummary(req: Request, res: Response) {
       topPerformers: [] as any[],
     }
 
-    posts.forEach((post) => {
+    posts.forEach((post: any) => {
       const latestMetrics = post.performanceMetrics[0]?.metricsJson as any
 
       if (latestMetrics) {
@@ -112,7 +112,7 @@ export async function getSummary(req: Request, res: Response) {
 
     // Calculate top performers
     aggregated.topPerformers = posts
-      .map((post) => {
+      .map((post: any) => {
         const metrics = post.performanceMetrics[0]?.metricsJson as any
         const engagement = (metrics?.likes || 0) + (metrics?.comments || 0) + (metrics?.saves || 0)
         return {
@@ -125,7 +125,7 @@ export async function getSummary(req: Request, res: Response) {
           templateDescription: post.campaignScript.script.template.structuralDescription,
         }
       })
-      .sort((a, b) => b.engagement - a.engagement)
+      .sort((a: any, b: any) => b.engagement - a.engagement)
       .slice(0, 10)
 
     res.json({
@@ -134,7 +134,7 @@ export async function getSummary(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error getting analytics summary:', error)
-    throw new AppError('Failed to get analytics summary', 500)
+    throw new ApiError('Failed to get analytics summary', 500)
   }
 }
 
@@ -142,7 +142,7 @@ export async function generateInsights(req: Request, res: Response) {
   const { offerId } = req.body
 
   if (!offerId) {
-    throw new AppError('Offer ID is required', 400)
+    throw new ApiError('Offer ID is required', 400)
   }
 
   try {
@@ -170,7 +170,7 @@ export async function generateInsights(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error generating insights:', error)
-    throw new AppError('Failed to generate insights', 500)
+    throw new ApiError('Failed to generate insights', 500)
   }
 }
 
@@ -202,7 +202,7 @@ async function getPerformanceData(offerId: string) {
 
   return {
     totalPosts: posts.length,
-    posts: posts.map((post) => ({
+    posts: posts.map((post: any) => ({
       metrics: post.performanceMetrics[0]?.metricsJson,
       angle: post.campaignScript.script.angle,
       hookType: post.campaignScript.script.hookType,
@@ -286,7 +286,7 @@ export async function getPostPerformance(req: Request, res: Response) {
   })
 
   if (!post) {
-    throw new AppError('Post not found', 404)
+    throw new ApiError('Post not found', 404)
   }
 
   res.json({

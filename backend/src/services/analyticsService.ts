@@ -44,12 +44,12 @@ export async function getSummary(request: any) {
   })
 
   // Aggregate metrics
-  const totalReach = posts.reduce((sum, post) => {
+  const totalReach = posts.reduce((sum: number, post: any) => {
     const metrics = post.performanceMetrics[0]?.metrics as any
     return sum + (metrics?.reach || 0)
   }, 0)
 
-  const totalEngagement = posts.reduce((sum, post) => {
+  const totalEngagement = posts.reduce((sum: number, post: any) => {
     const metrics = post.performanceMetrics[0]?.metrics as any
     return sum + (metrics?.engagement || 0)
   }, 0)

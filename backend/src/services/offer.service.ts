@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '../utils/prisma.js'
 import { kodeyClient } from '../integrations/kodey.client.js'
 import { generateEmbedding, generateStructuredOutput } from '../integrations/openai.client.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 import pdfParse from 'pdf-parse'
 import fs from 'fs'
@@ -24,12 +24,12 @@ interface OfferProfileData {
 
 export async function uploadPdf(req: Request, res: Response) {
   if (!req.file) {
-    throw new AppError('No PDF file uploaded', 400)
+    throw new ApiError('No PDF file uploaded', 400)
   }
 
   const { name } = req.body
   if (!name) {
-    throw new AppError('Offer name is required', 400)
+    throw new ApiError('Offer name is required', 400)
   }
 
   try {
@@ -55,7 +55,7 @@ export async function uploadPdf(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error uploading PDF:', error)
-    throw new AppError('Failed to upload PDF', 500)
+    throw new ApiError('Failed to upload PDF', 500)
   }
 }
 
@@ -219,7 +219,7 @@ function parseOfferProfile(output: string): OfferProfileData {
     return output as OfferProfileData
   } catch (error) {
     logger.error('Failed to parse offer profile:', error)
-    throw new AppError('Failed to parse offer profile data', 500)
+    throw new ApiError('Failed to parse offer profile data', 500)
   }
 }
 
@@ -278,7 +278,7 @@ export async function getOffer(req: Request, res: Response) {
   })
 
   if (!offer) {
-    throw new AppError('Offer not found', 404)
+    throw new ApiError('Offer not found', 404)
   }
 
   res.json({
@@ -298,7 +298,7 @@ export async function getOfferProfile(req: Request, res: Response) {
   })
 
   if (!profile) {
-    throw new AppError('Offer profile not found', 404)
+    throw new ApiError('Offer profile not found', 404)
   }
 
   res.json({
@@ -318,7 +318,7 @@ export async function updateAIDirector(req: Request, res: Response) {
   })
 
   if (!currentPlaybook) {
-    throw new AppError('No playbook found for this offer', 404)
+    throw new ApiError('No playbook found for this offer', 404)
   }
 
   // Use Kodey.ai to generate updated instructions based on performance

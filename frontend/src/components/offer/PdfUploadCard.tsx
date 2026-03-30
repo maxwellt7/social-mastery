@@ -23,12 +23,8 @@ export default function PdfUploadCard() {
     e.preventDefault()
     if (!selectedFile || !offerName) return
 
-    const formData = new FormData()
-    formData.append('pdf', selectedFile)
-    formData.append('name', offerName)
-
     try {
-      await uploadPdf.mutateAsync(formData)
+      await uploadPdf.mutateAsync({ file: selectedFile, offerName })
       setOfferName('')
       setSelectedFile(null)
     } catch (error) {
@@ -88,7 +84,7 @@ export default function PdfUploadCard() {
           type="submit"
           className="w-full"
           disabled={!selectedFile || !offerName}
-          loading={uploadPdf.isPending}
+          isLoading={uploadPdf.isPending}
         >
           Upload & Process
         </Button>

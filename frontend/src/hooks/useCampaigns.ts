@@ -58,9 +58,10 @@ export const useVideoStatus = (videoAssetId: string) => {
     queryKey: ['videos', videoAssetId],
     queryFn: () => campaignApi.getVideoStatus(videoAssetId),
     enabled: !!videoAssetId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Poll every 5 seconds if video is processing
-      if (data?.status === 'pending' || data?.status === 'processing') {
+      const videoData = query.state.data
+      if (videoData?.status === 'pending' || videoData?.status === 'processing') {
         return 5000
       }
       return false

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '../utils/prisma.js'
 import { creatifyClient } from '../integrations/creatify.client.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 import { videoGenerationQueue } from '../jobs/videoGeneration.job.js'
 
@@ -9,7 +9,7 @@ export async function createVideo(req: Request, res: Response) {
   const { scriptId, voiceId, avatarId, aspectRatio = '9:16', style } = req.body
 
   if (!scriptId) {
-    throw new AppError('Script ID is required', 400)
+    throw new ApiError('Script ID is required', 400)
   }
 
   try {
@@ -19,7 +19,7 @@ export async function createVideo(req: Request, res: Response) {
     })
 
     if (!script) {
-      throw new AppError('Script not found', 404)
+      throw new ApiError('Script not found', 404)
     }
 
     // Create video job with Creatify
@@ -74,7 +74,7 @@ export async function createVideo(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error creating video:', error)
-    throw new AppError('Failed to create video', 500)
+    throw new ApiError('Failed to create video', 500)
   }
 }
 
@@ -116,7 +116,7 @@ export async function getJobStatus(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error(`Error getting job status for ${creatifyJobId}:`, error)
-    throw new AppError('Failed to get job status', 500)
+    throw new ApiError('Failed to get job status', 500)
   }
 }
 
@@ -130,7 +130,7 @@ export async function listAvatars(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error listing avatars:', error)
-    throw new AppError('Failed to list avatars', 500)
+    throw new ApiError('Failed to list avatars', 500)
   }
 }
 
@@ -144,7 +144,7 @@ export async function listVoices(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error listing voices:', error)
-    throw new AppError('Failed to list voices', 500)
+    throw new ApiError('Failed to list voices', 500)
   }
 }
 

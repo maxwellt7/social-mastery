@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
 import prisma from '../utils/prisma.js'
 import { kodeyClient } from '../integrations/kodey.client.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 
 export async function createFromIGPost(req: Request, res: Response) {
   const { offerId, postUrl, caption, transcript, metrics } = req.body
 
   if (!offerId || !postUrl || (!caption && !transcript)) {
-    throw new AppError('Missing required fields', 400)
+    throw new ApiError('Missing required fields', 400)
   }
 
   try {
@@ -52,7 +52,7 @@ export async function createFromIGPost(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error creating template from IG post:', error)
-    throw new AppError('Failed to create template', 500)
+    throw new ApiError('Failed to create template', 500)
   }
 }
 
@@ -155,7 +155,7 @@ export async function getTemplate(req: Request, res: Response) {
   })
 
   if (!template) {
-    throw new AppError('Template not found', 404)
+    throw new ApiError('Template not found', 404)
   }
 
   res.json({

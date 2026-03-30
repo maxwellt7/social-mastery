@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { instagramClient } from '../integrations/instagram.client.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 import prisma from '../utils/prisma.js'
 
@@ -8,11 +8,11 @@ export async function searchHighPerformers(req: Request, res: Response) {
   const { hashtags, minLikes, minSaves, limit = 25, igUserId } = req.body
 
   if (!hashtags || !Array.isArray(hashtags) || hashtags.length === 0) {
-    throw new AppError('Hashtags are required', 400)
+    throw new ApiError('Hashtags are required', 400)
   }
 
   if (!igUserId) {
-    throw new AppError('Instagram User ID is required', 400)
+    throw new ApiError('Instagram User ID is required', 400)
   }
 
   try {
@@ -53,7 +53,7 @@ export async function searchHighPerformers(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error searching high performers:', error)
-    throw new AppError('Failed to search Instagram content', 500)
+    throw new ApiError('Failed to search Instagram content', 500)
   }
 }
 
@@ -61,7 +61,7 @@ export async function publishPost(req: Request, res: Response) {
   const { igUserId, videoUrl, caption, shareToFeed = true } = req.body
 
   if (!igUserId || !videoUrl || !caption) {
-    throw new AppError('Missing required fields', 400)
+    throw new ApiError('Missing required fields', 400)
   }
 
   try {
@@ -85,7 +85,7 @@ export async function publishPost(req: Request, res: Response) {
     }
 
     if (status !== 'FINISHED') {
-      throw new AppError(`Media container processing failed with status: ${status}`, 500)
+      throw new ApiError(`Media container processing failed with status: ${status}`, 500)
     }
 
     // Publish media
@@ -102,7 +102,7 @@ export async function publishPost(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error publishing to Instagram:', error)
-    throw new AppError('Failed to publish post', 500)
+    throw new ApiError('Failed to publish post', 500)
   }
 }
 
@@ -135,7 +135,7 @@ export async function getPostMetrics(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error(`Error fetching metrics for media ${mediaId}:`, error)
-    throw new AppError('Failed to fetch post metrics', 500)
+    throw new ApiError('Failed to fetch post metrics', 500)
   }
 }
 

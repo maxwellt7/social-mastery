@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
 import prisma from '../utils/prisma.js'
 import { kodeyClient } from '../integrations/kodey.client.js'
-import { AppError } from '../middleware/errorHandler.js'
+import { ApiError } from '../middleware/errorHandler.js'
 import { logger } from '../utils/logger.js'
 
 export async function generateScripts(req: Request, res: Response) {
   const { templateId, offerId, numVariants = 3, angle, variableMappings } = req.body
 
   if (!templateId || !offerId) {
-    throw new AppError('Template ID and Offer ID are required', 400)
+    throw new ApiError('Template ID and Offer ID are required', 400)
   }
 
   try {
@@ -23,7 +23,7 @@ export async function generateScripts(req: Request, res: Response) {
     ])
 
     if (!template || !offerProfile || !directorPlaybook) {
-      throw new AppError('Template, offer profile, or playbook not found', 404)
+      throw new ApiError('Template, offer profile, or playbook not found', 404)
     }
 
     // Get or create script generation agent
@@ -79,7 +79,7 @@ export async function generateScripts(req: Request, res: Response) {
     })
   } catch (error) {
     logger.error('Error generating scripts:', error)
-    throw new AppError('Failed to generate scripts', 500)
+    throw new ApiError('Failed to generate scripts', 500)
   }
 }
 
@@ -186,7 +186,7 @@ export async function getScript(req: Request, res: Response) {
   })
 
   if (!script) {
-    throw new AppError('Script not found', 404)
+    throw new ApiError('Script not found', 404)
   }
 
   res.json({

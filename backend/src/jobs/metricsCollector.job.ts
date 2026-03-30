@@ -40,7 +40,7 @@ export const metricsCollectorWorker = new Worker(
       await prisma.performanceMetric.create({
         data: {
           instagramPostId,
-          metricsJson: metricsData,
+          metrics: metricsData,
         },
       })
 

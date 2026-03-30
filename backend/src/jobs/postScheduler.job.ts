@@ -22,11 +22,7 @@ export const postSchedulerWorker = new Worker(
         include: {
           script: {
             include: {
-              videoAssets: {
-                where: { status: 'completed' },
-                orderBy: { createdAt: 'desc' },
-                take: 1,
-              },
+              videoAsset: true,
             },
           },
           campaign: {
@@ -41,11 +37,11 @@ export const postSchedulerWorker = new Worker(
         throw new Error('Campaign script not found')
       }
 
-      if (!campaignScript.script.videoAssets[0]) {
+      if (!campaignScript.script.videoAsset || campaignScript.script.videoAsset.status !== 'completed') {
         throw new Error('No completed video found for script')
       }
 
-      const videoUrl = campaignScript.script.videoAssets[0].videoUrl
+      const videoUrl = campaignScript.script.videoAsset.videoUrl
       if (!videoUrl) {
         throw new Error('Video URL not available')
       }
@@ -94,10 +90,12 @@ export const postSchedulerWorker = new Worker(
       const instagramPost = await prisma.instagramPost.create({
         data: {
           campaignScriptId,
-          igPostId: mediaId,
-          igPermalink: mediaDetails.permalink,
+          instagramPostId: mediaId,
+          caption: campaignScript.caption || campaignScript.script.scriptText,
           mediaType: mediaDetails.media_type,
-          postedAt: new Date(mediaDetails.timestamp),
+          mediaUrl: videoUrl,
+          permalink: mediaDetails.permalink,
+          timestamp: new Date(mediaDetails.timestamp),
         },
       })
 

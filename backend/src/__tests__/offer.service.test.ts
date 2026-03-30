@@ -1,37 +1,37 @@
-import { describe, it, expect, vi, beforeEach } from '@jest/globals'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
 // Mock dependencies
-vi.mock('../utils/prisma.js', () => ({
+jest.mock('../utils/prisma.js', () => ({
   default: {
     offer: {
-      create: vi.fn(),
-      findUnique: vi.fn(),
-      findMany: vi.fn(),
-      update: vi.fn(),
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
     },
     offerProfile: {
-      create: vi.fn(),
-      findFirst: vi.fn(),
+      create: jest.fn(),
+      findFirst: jest.fn(),
     },
     directorPlaybook: {
-      create: vi.fn(),
-      findFirst: vi.fn(),
+      create: jest.fn(),
+      findFirst: jest.fn(),
     },
   },
 }))
 
-vi.mock('../integrations/kodey.client.js', () => ({
+jest.mock('../integrations/kodey.client.js', () => ({
   kodeyClient: {
-    createKnowledgeBase: vi.fn(),
-    uploadDocument: vi.fn(),
-    createAgent: vi.fn(),
-    executeAgent: vi.fn(),
+    createKnowledgeBase: jest.fn(),
+    uploadDocument: jest.fn(),
+    createAgent: jest.fn(),
+    executeAgent: jest.fn(),
   },
 }))
 
 describe('Offer Service', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   it('should be defined', () => {

@@ -24,7 +24,7 @@ export async function getSummary(req: Request, res: Response) {
             offerId: offerId as string,
           },
         },
-        postedAt: {
+        timestamp: {
           gte: start,
           lte: end,
         },
@@ -63,7 +63,7 @@ export async function getSummary(req: Request, res: Response) {
     }
 
     posts.forEach((post) => {
-      const latestMetrics = post.performanceMetrics[0]?.metricsJson as any
+      const latestMetrics = post.performanceMetrics[0]?.metrics as any
 
       if (latestMetrics) {
         aggregated.totalImpressions += latestMetrics.impressions || 0
@@ -113,12 +113,12 @@ export async function getSummary(req: Request, res: Response) {
     // Calculate top performers
     aggregated.topPerformers = posts
       .map((post) => {
-        const metrics = post.performanceMetrics[0]?.metricsJson as any
+        const metrics = post.performanceMetrics[0]?.metrics as any
         const engagement = (metrics?.likes || 0) + (metrics?.comments || 0) + (metrics?.saves || 0)
         return {
           postId: post.id,
-          igPostId: post.igPostId,
-          permalink: post.igPermalink,
+          igPostId: post.instagramPostId,
+          permalink: post.permalink,
           engagement,
           metrics,
           scriptAngle: post.campaignScript.script.angle,
@@ -203,7 +203,7 @@ async function getPerformanceData(offerId: string) {
   return {
     totalPosts: posts.length,
     posts: posts.map((post) => ({
-      metrics: post.performanceMetrics[0]?.metricsJson,
+      metrics: post.performanceMetrics[0]?.metrics,
       angle: post.campaignScript.script.angle,
       hookType: post.campaignScript.script.hookType,
       templateDescription: post.campaignScript.script.template.structuralDescription,

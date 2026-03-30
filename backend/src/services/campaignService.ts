@@ -38,7 +38,7 @@ export async function getCampaigns(offerId?: string) {
   return prisma.campaign.findMany({
     where,
     include: {
-      scripts: {
+      campaignScripts: {
         include: {
           script: {
             include: {
@@ -58,7 +58,7 @@ export async function getCampaign(id: string) {
   const campaign = await prisma.campaign.findUnique({
     where: { id },
     include: {
-      scripts: {
+      campaignScripts: {
         include: {
           script: {
             include: {

@@ -21,23 +21,10 @@ export interface OfferProfile {
 }
 
 export interface AvatarDetails {
-  demographics: {
-    age?: string
-    gender?: string
-    location?: string
-    income?: string
-  }
-  psychographics: {
-    values: string[]
-    interests: string[]
-    painPoints: string[]
-    desires: string[]
-  }
-  awareness: {
-    problemAware: boolean
-    solutionAware: boolean
-    productAware: boolean
-  }
+  demographics: string
+  psychographics: string
+  painPoints: string[]
+  desires: string[]
 }
 
 export interface DirectorPlaybook {

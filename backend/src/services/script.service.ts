@@ -35,16 +35,16 @@ export async function generateScripts(req: Request, res: Response) {
       const agentResponse = await kodeyClient.executeAgent(scriptAgent.agent_id, {
         input: {
           template: template.templateText,
-          placeholders: template.placeholdersJson,
+          placeholders: template.placeholders,
           variableMappings: variableMappings || {},
           offerProfile: {
             bigIdea: offerProfile.bigIdea,
             mechanism: offerProfile.mechanism,
-            avatar: offerProfile.avatarJson,
+            avatar: offerProfile.avatar,
             voiceAndTone: offerProfile.voiceAndTone,
           },
           directorInstructions: directorPlaybook.instructionsText,
-          directorConfig: directorPlaybook.configJson,
+          directorConfig: directorPlaybook.config,
           angle: angle || 'pain',
           variant: i + 1,
         },
@@ -157,7 +157,7 @@ export async function listScripts(req: Request, res: Response) {
           pillar: true,
         },
       },
-      videoAssets: true,
+      videoAsset: true,
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -176,7 +176,7 @@ export async function getScript(req: Request, res: Response) {
     include: {
       template: true,
       offer: true,
-      videoAssets: true,
+      videoAsset: true,
       campaignScripts: {
         include: {
           campaign: true,

@@ -16,6 +16,7 @@ model Offer {
   id        String   @id @default(uuid())
   name      String
   pdfUrl    String
+  status    String   @default("draft") // 'draft' | 'processing' | 'ready' | 'error'
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -142,8 +143,8 @@ model Campaign {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  offer   Offer            @relation(fields: [offerId], references: [id], onDelete: Cascade)
-  scripts CampaignScript[]
+  offer            Offer            @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  campaignScripts  CampaignScript[]
 
   @@map("campaigns")
 }
@@ -155,6 +156,9 @@ model CampaignScript {
   scheduledTime DateTime?
   igPostId      String?
   postedAt      DateTime?
+  caption       String?   @db.Text
+  hashtags      String[]
+  errorMessage  String?   @db.Text
   status        String    @default("pending") // 'pending' | 'processing' | 'ready' | 'scheduled' | 'published' | 'failed'
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -189,8 +193,23 @@ model PerformanceMetric {
   instagramPostId  String
   timestamp        DateTime @default(now())
   metrics          Json     // All metrics as JSON
-  
+
   instagramPost InstagramPost @relation(fields: [instagramPostId], references: [id], onDelete: Cascade)
 
   @@map("performance_metrics")
+}
+
+model AIAgent {
+  id            String   @id @default(uuid())
+  name          String
+  type          String   // 'extraction' | 'analysis' | 'generation' | 'insights'
+  kodeyAgentId  String?
+  instructions  String   @db.Text
+  model         String   @default("gpt-4")
+  temperature   Float    @default(0.7)
+  status        String   @default("active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("ai_agents")
 }

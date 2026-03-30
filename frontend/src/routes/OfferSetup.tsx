@@ -171,7 +171,7 @@ export default function OfferSetup() {
                               <div>
                                 <p className="text-sm font-medium text-gray-700">Pain Points:</p>
                                 <ul className="text-sm text-gray-600 list-disc list-inside">
-                                  {offerProfile.avatar.psychographics.painPoints.map((pain: string, i: number) => (
+                                  {offerProfile.avatar.painPoints.map((pain: string, i: number) => (
                                     <li key={i}>{pain}</li>
                                   ))}
                                 </ul>
@@ -179,7 +179,7 @@ export default function OfferSetup() {
                               <div>
                                 <p className="text-sm font-medium text-gray-700">Desires:</p>
                                 <ul className="text-sm text-gray-600 list-disc list-inside">
-                                  {offerProfile.avatar.psychographics.desires.map((desire: string, i: number) => (
+                                  {offerProfile.avatar.desires.map((desire: string, i: number) => (
                                     <li key={i}>{desire}</li>
                                   ))}
                                 </ul>

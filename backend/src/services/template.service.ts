@@ -35,10 +35,11 @@ export async function createFromIGPost(req: Request, res: Response) {
       data: {
         offerId,
         sourcePlatform: 'instagram',
+        sourcePostId: postUrl,
         sourcePostUrl: postUrl,
         structuralDescription: templateData.structuralDescription,
         templateText: templateData.templateText,
-        placeholdersJson: templateData.placeholders,
+        placeholders: templateData.placeholders,
         funnelStage: templateData.funnelStage,
         pillar: templateData.pillar,
         performanceTag: 'test',
@@ -166,13 +167,13 @@ export async function getTemplate(req: Request, res: Response) {
 
 export async function updateTemplate(req: Request, res: Response) {
   const { id } = req.params
-  const { templateText, placeholdersJson, funnelStage, pillar, performanceTag } = req.body
+  const { templateText, placeholders, funnelStage, pillar, performanceTag } = req.body
 
   const template = await prisma.template.update({
     where: { id },
     data: {
       ...(templateText && { templateText }),
-      ...(placeholdersJson && { placeholdersJson }),
+      ...(placeholders && { placeholders }),
       ...(funnelStage && { funnelStage }),
       ...(pillar && { pillar }),
       ...(performanceTag && { performanceTag }),

@@ -9,7 +9,7 @@ const prisma = new PrismaClient({
 
 prisma.$connect()
   .then(() => logger.info('Database connected'))
-  .catch((err) => logger.error('Database connection error:', err))
+  .catch((err: unknown) => logger.error('Database connection error:', err))
 
 export default prisma
 
